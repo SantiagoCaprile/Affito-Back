@@ -22,11 +22,11 @@ exports.addCliente = async (req, res, next) => {
         const cliente = await Cliente.create(req.body);
         return res.status(201).json({
             success: true,
-            data: cliente 
+            data: cliente
         });
     } catch (error) {
         console.error(error);
-        return res.status(500).json({ 
+        return res.status(500).json({
             error: 'Server Error'
         });
     }
@@ -47,7 +47,31 @@ exports.getCliente = async (req, res, next) => {
         });
     } catch (error) {
         console.error(error);
-        return res.status(500).json({ 
+        return res.status(500).json({
+            error: 'Server Error'
+        });
+    }
+};
+
+exports.updateCliente = async (req, res, next) => {
+    try {
+        const cliente = await Cliente.findOneAndUpdate({ cuit: req.params.id }, req.body, {
+            new: true,
+            runValidators: true
+        });
+        if (!cliente) {
+            return res.status(404).json({
+                success: false,
+                error: 'Cliente not found'
+            });
+        }
+        return res.status(200).json({
+            success: true,
+            data: cliente
+        });
+    } catch (error) {
+        console.error(error);
+        return res.status(500).json({
             error: 'Server Error'
         });
     }
