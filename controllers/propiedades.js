@@ -34,7 +34,7 @@ exports.addPropiedad = async (req, res, next) => {
 
 exports.getPropiedad = async (req, res, next) => {
     try {
-        const prop = await Propiedad.findOne({ cod_prop: req.params.id });
+        const prop = await Propiedad.findOne({ _id: req.params.id });
         if (!prop) {
             return res.status(404).json({
                 success: false,
