@@ -1,4 +1,3 @@
-const Domicilio = require('../models/Domicilio');
 const Propiedad = require('../models/Propiedad');
 
 exports.getPropiedades = async (req, res, next) => {
@@ -53,15 +52,3 @@ exports.getPropiedad = async (req, res, next) => {
         });
     }
 };
-
-// const p = {
-//     cod_prop: 2,
-//     descripcion: 'Hermoso dpto en el quinto piso',
-//     dimension: '64',
-//     tipo: "62c0cf4f183797acd1b90e70",
-    // domicilio: "62c0d10d02a16f20866065c2",
-// }
-// crearPropiedad = async () => {
-//         await Propiedad.create(p);
-// }
-// crearPropiedad();

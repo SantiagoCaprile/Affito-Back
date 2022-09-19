@@ -24,7 +24,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 //routes
 app.use('/api/v1/localidades', require('./routes/localidades'));
 app.use('/api/v1/domicilios', require('./routes/domicilios'));
-app.use('/api/v1/propiedades', require('./routes/propiedades'));
+app.use('/propiedades', require('./routes/propiedades'));
 app.use('/api/v1/pagos', require('./routes/pagos'));
 app.use('/api/v1/tipos', require('./routes/tiposPropiedades'));
 app.use('/api/v1/monedas', require('./routes/moneda'));

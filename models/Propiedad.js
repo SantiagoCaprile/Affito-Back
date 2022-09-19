@@ -17,19 +17,40 @@ const PropiedadSchema = new mongoose.Schema({
         type: Number,
     },
     tipo: {
-        type: mongoose.Types.ObjectId,
-        ref: 'TipoPropiedad',
+        type: String,
         required: [true, 'Por favor ingrese un tipo de propiedad'],
+        trim: true,
+        maxlength: [30, 'tipo no puede tener mas de 30 caracteres'],
     },
     domicilio: {
-        type: mongoose.Types.ObjectId,
-        ref: 'Domicilio',
-        required: [true, 'Por favor ingrese un domicilio'],
+        calle:{
+            type: String,
+            trim: true,
+            maxlength: [50, 'calle no puede tener mas de 50 caracteres'],
+        },
+        altura:{
+            type: Number,
+            trim: true,
+            maxlength: [6, 'altura no puede tener mas de 50 caracteres']},
+        piso:{
+            type: Number,
+            trim: true,
+            maxlength: [3, 'piso no puede tener mas de 3 caracteres']
+        },
+        dpto:{
+            type: String,
+            trim: true,
+            maxlength: [3, 'dpto no puede tener mas de 3 caracteres']
+        },
+        localidad:{
+            type: String,
+            trim: true,
+            maxlength: [10, 'localidad no puede tener mas de 10 caracteres']
+        }
     },
     propietario: {
         type: mongoose.Types.ObjectId,
         ref: 'Cliente',
-        required: [true, 'Por favor ingrese un propietario'],
     },
     contrato: [{
         type: mongoose.Types.ObjectId,
@@ -40,6 +61,16 @@ const PropiedadSchema = new mongoose.Schema({
         trim: true,
         maxlength: [20, 'estado no puede tener mas de 20 caracteres'],
         default: 'Disponible',
+    },
+    precio: {
+        type: Number,
+        default: 0,
+    },
+    moneda: {
+        type: String,
+        trim: true,
+        maxlength: [3, 'moneda no puede tener mas de 3 caracteres'],
+        default: 'ARS',
     },
 });
 
