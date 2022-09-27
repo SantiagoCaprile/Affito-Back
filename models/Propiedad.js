@@ -1,13 +1,6 @@
 const mongoose = require('mongoose');
 
 const PropiedadSchema = new mongoose.Schema({
-    cod_prop: {
-        type: String,
-        required: [true, 'Por favor ingrese un código de propiedad'],
-        unique: true,
-        trim: true,
-        maxlength: [10, 'cod_prop no puede tener mas de 10 caracteres'],
-    },
     descripcion: {
         type: String,
         trim: true,
@@ -45,7 +38,7 @@ const PropiedadSchema = new mongoose.Schema({
         localidad:{
             type: String,
             trim: true,
-            maxlength: [10, 'localidad no puede tener mas de 10 caracteres']
+            maxlength: [30, 'localidad no puede tener mas de 30 caracteres']
         }
     },
     propietario: {
