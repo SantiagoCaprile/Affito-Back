@@ -1,13 +1,6 @@
 const mongoose = require('mongoose');
 
 const ContratoSchema = new mongoose.Schema({
-    cod_contrato: {
-        type: String,
-        required: [true, 'Por favor ingrese un código de contrato'],
-        unique: true,
-        trim: true,
-        maxlength: [10, 'cod_contrato no puede tener mas de 10 caracteres'],
-    },
     destino: {
         type: String,
         required: [true, 'Por favor ingrese un destino'],
@@ -16,7 +9,7 @@ const ContratoSchema = new mongoose.Schema({
     },
     estado: {
         type: String,
-        default: 'Activo',
+        default: 'Activo', // Activo, Inactivo (Vigente - Extinto/Rescindido)
     },
     fecha_inicio: {
         type: Date,
@@ -42,7 +35,7 @@ const ContratoSchema = new mongoose.Schema({
         type: Number,
         required: [true, 'Por favor ingrese el porcentaje de interes por dia de mora'],
     },
-    fecha_proxima_actualizacion: {
+    fecha_proxima_actualizacion: {//fecha de inicio + 1 año, si ya pasó, se le suma otro año hasta que no haya pasado
         type: Date,
         required: [true, 'Por favor ingrese una fecha de proxima actualizacion'],
     },
@@ -51,7 +44,7 @@ const ContratoSchema = new mongoose.Schema({
         required: [true, 'Por favor ingrese un monto'],
     },
     moneda: {
-        type: mongoose.Types.ObjectId,
+        type: String,
         ref: 'Moneda',
         required: [true, 'Por favor ingrese una moneda'],
     },
@@ -64,10 +57,10 @@ const ContratoSchema = new mongoose.Schema({
         ref: 'Propiedad',
         required: [true, 'Por favor ingrese una propiedad'],
     },
-    inquilino: {
-        type: mongoose.Types.ObjectId,
-        ref: 'Cliente',
-        required: [true, 'Por favor ingrese un inquilino'],
+    inquilinos: {
+            type: mongoose.Types.ObjectId,
+            ref: 'Cliente',
+            required: [true, 'Por favor ingrese un inquilino'],
     },
     garantes: [{
         type: mongoose.Types.ObjectId,

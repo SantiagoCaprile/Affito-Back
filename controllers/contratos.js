@@ -17,7 +17,7 @@ exports.addContrato = async (req, res, next) => {
 
 exports.getContrato = async (req, res, next) => {
     try {
-        const contrato = await Contrato.findOne({ cod_contrato: req.params.id });
+        const contrato = await Contrato.findOneById(req.params.id);
         if (!contrato) {
             return res.status(404).json({
                 success: false,
