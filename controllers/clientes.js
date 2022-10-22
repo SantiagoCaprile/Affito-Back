@@ -76,3 +76,24 @@ exports.updateCliente = async (req, res, next) => {
         });
     }
 };
+
+exports.filterClientes = async (req, res, next) => {
+    try {
+        const clientes = await Cliente.find({
+            $and: [
+                { cuit: { $regex: req.body.cuit } },
+                { nombre_razon_social: { $regex: req.body.nombre, $options: 'i'} },
+            ]
+        });
+        return res.status(200).json({
+            success: true,
+            count: clientes.length,
+            data: clientes
+        });
+    } catch (error) {
+        console.error(error);
+        return res.status(500).json({
+            error: 'Server Error'
+        });
+    }
+}
