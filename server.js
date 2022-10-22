@@ -22,6 +22,7 @@ app.use(cors());
 app.use(express.static(path.join(__dirname, 'public')));
 
 //routes
+app.use('/usuarios', require('./routes/usuarios'));
 app.use('/api/v1/localidades', require('./routes/localidades'));
 app.use('/api/v1/domicilios', require('./routes/domicilios'));
 app.use('/propiedades', require('./routes/propiedades'));
