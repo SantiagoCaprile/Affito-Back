@@ -37,7 +37,7 @@ const ContratoSchema = new mongoose.Schema({
     },
     fecha_proxima_actualizacion: {//fecha de inicio + 1 año, si ya pasó, se le suma otro año hasta que no haya pasado
         type: Date,
-        required: [true, 'Por favor ingrese una fecha de proxima actualizacion'],
+        // required: [true, 'Por favor ingrese una fecha de proxima actualizacion'],
     },
     monto: {
         type: Number,
@@ -48,6 +48,11 @@ const ContratoSchema = new mongoose.Schema({
         ref: 'Moneda',
         required: [true, 'Por favor ingrese una moneda'],
     },
+    observaciones: {
+        type: String,
+        trim: true,
+        maxlength: [200, 'Observaciones no puede tener mas de 200 caracteres'],
+    },
     pagos: [{
         type: mongoose.Types.ObjectId,
         ref: 'Pago',
@@ -57,15 +62,15 @@ const ContratoSchema = new mongoose.Schema({
         ref: 'Propiedad',
         required: [true, 'Por favor ingrese una propiedad'],
     },
-    inquilinos: {
-            type: mongoose.Types.ObjectId,
-            ref: 'Cliente',
-            required: [true, 'Por favor ingrese un inquilino'],
-    },
-    garantes: [{
-        type: mongoose.Types.ObjectId,
-        ref: 'Cliente',
-    }]
+    // inquilinos: {
+    //     type: mongoose.Types.ObjectId,
+    //     ref: 'Cliente',
+    //     required: [true, 'Por favor ingrese un inquilino'],
+    // },
+    // garantes: {
+    //     type: mongoose.Types.ObjectId,
+    //     ref: 'Cliente',
+    // }
 });
 
 module.exports = mongoose.model('Contrato', ContratoSchema);
