@@ -30,6 +30,7 @@ app.use('/api/v1/pagos', require('./routes/pagos'));
 app.use('/api/v1/tipos', require('./routes/tiposPropiedades'));
 app.use('/api/v1/monedas', require('./routes/moneda'));
 app.use('/api/v1/clientes', require('./routes/clientes'));
+app.use('/api/v1/aud_clientes', require('./routes/aud_clientes'));
 app.use('/api/v1/contratos', require('./routes/contratos'));
 
 const PORT = process.env.PORT || 5000;
