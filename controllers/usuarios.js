@@ -87,14 +87,14 @@ exports.getUsuarios = async (req, res, next) => {
 
 exports.restartPassword = async (req, res, next) => {
 	try {
-		const usuario = await Usuario.findById(req.params.id);
+		const usuario = await Usuario.findById(req.body.id);
 		if (!usuario) {
 			return res.status(404).json({
 				success: false,
 				error: "Usuario not found",
 			});
 		}
-		usuario.password = await Usuario.prototype.encryptPassword("1234");
+		usuario.password = "1234";
 		await usuario.save();
 		return res.status(200).json({
 			success: true,
