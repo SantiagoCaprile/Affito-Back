@@ -59,16 +59,34 @@ const PropiedadSchema = new mongoose.Schema({
 		maxlength: [20, "estado no puede tener mas de 20 caracteres"],
 		default: "Disponible",
 	},
-	precio: {
-		type: Number,
-		default: 0,
-	},
-	moneda: {
-		type: String,
-		trim: true,
-		maxlength: [3, "moneda no puede tener mas de 3 caracteres"],
-		default: "ARS",
-	},
+	operaciones: [
+		{
+			moneda: {
+				type: String,
+				trim: true,
+				maxlength: [3, "moneda no puede tener mas de 3 caracteres"],
+				default: "ARS",
+			},
+			monto: {
+				type: Number,
+			},
+			tipo: {
+				type: String,
+				trim: true,
+				maxlength: [20, "operacion no puede tener mas de 20 caracteres"],
+				enum: ["Venta", "Alquiler"],
+			},
+			observaciones: {
+				type: String,
+				trim: true,
+				maxlength: [150, "observacion no puede tener mas de 150 caracteres"],
+			},
+			fecha: {
+				type: Date,
+				default: Date.now(),
+			},
+		},
+	],
 });
 
 module.exports = mongoose.model("Propiedad", PropiedadSchema);

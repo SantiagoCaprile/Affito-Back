@@ -1,9 +1,21 @@
-const express = require('express');
-const { getPropiedades, addPropiedad, getPropiedad, updatePropiedad } = require('../controllers/propiedades');
+const express = require("express");
+const {
+	getPropiedades,
+	addPropiedad,
+	getPropiedad,
+	updatePropiedad,
+	addOperacion,
+	editOperacion,
+	deleteOperacion,
+} = require("../controllers/propiedades");
 
 const router = express.Router();
 
-router.route('/').get(getPropiedades).post(addPropiedad);
-router.route('/:id').get(getPropiedad).put(updatePropiedad);
+router.route("/").get(getPropiedades).post(addPropiedad);
+router.route("/:id").get(getPropiedad).put(updatePropiedad);
+
+router.route("/:id/operacion").post(addOperacion);
+router.route("/:id/operacion/:idOperacion").put(editOperacion);
+router.route("/:id/operacion/:idOperacion").delete(deleteOperacion);
 
 module.exports = router;
