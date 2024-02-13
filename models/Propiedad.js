@@ -1,4 +1,6 @@
 const mongoose = require("mongoose");
+const EstadoPropiedad = require("../enums/EstadoPropiedad");
+const Monedas = require("../enums/Monedas");
 
 const PropiedadSchema = new mongoose.Schema({
 	descripcion: {
@@ -57,7 +59,12 @@ const PropiedadSchema = new mongoose.Schema({
 		type: String,
 		trim: true,
 		maxlength: [20, "estado no puede tener mas de 20 caracteres"],
-		default: "Disponible",
+		default: EstadoPropiedad.DISPONIBLE,
+		enum: [
+			EstadoPropiedad.DISPONIBLE,
+			EstadoPropiedad.ALQUILADA,
+			EstadoPropiedad.RESERVADA,
+		],
 	},
 	operaciones: [
 		{
@@ -65,7 +72,8 @@ const PropiedadSchema = new mongoose.Schema({
 				type: String,
 				trim: true,
 				maxlength: [3, "moneda no puede tener mas de 3 caracteres"],
-				default: "ARS",
+				default: Monedas.PESOS,
+				enum: [Monedas.PESOS, Monedas.DOLAR, Monedas.EURO],
 			},
 			monto: {
 				type: Number,
