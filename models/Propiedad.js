@@ -47,7 +47,7 @@ const PropiedadSchema = new mongoose.Schema({
 		type: mongoose.Types.ObjectId,
 		ref: "Cliente",
 	},
-	contrato: [
+	contratos: [
 		{
 			type: mongoose.Types.ObjectId,
 			ref: "Contrato",
