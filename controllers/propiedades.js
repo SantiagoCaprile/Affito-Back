@@ -1,4 +1,5 @@
 const Propiedad = require("../models/Propiedad");
+const EstadoPropiedad = require("../enums/EstadoPropiedad");
 
 exports.getPropiedades = async (req, res, next) => {
 	try {
@@ -163,5 +164,15 @@ exports.deleteOperacion = async (req, res, next) => {
 		return res.status(500).json({
 			error: "Server Error",
 		});
+	}
+};
+
+exports.AlquilarPropiedad = async (prop, contratoId) => {
+	try {
+		prop.estado = EstadoPropiedad.ALQUILADA;
+		prop.contratos.push(contratoId);
+		await prop.save();
+	} catch (error) {
+		console.error(error);
 	}
 };

@@ -1,13 +1,20 @@
 const Contrato = require("../models/Contrato");
 const Propiedad = require("../models/Propiedad");
+const EstadoPropiedad = require("../enums/EstadoPropiedad");
+const { AlquilarPropiedad } = require("./propiedades");
 
 // crear un contrato y pushea en contratos de la propiedad correspondiente
 exports.addContrato = async (req, res, next) => {
+	const propiedad = await Propiedad.findById(req.body.propiedad);
+	if (!propiedad || propiedad.estado !== EstadoPropiedad.DISPONIBLE) {
+		return res.status(404).json({
+			success: false,
+			error: "Propiedad not found or not available",
+		});
+	}
 	try {
 		const contrato = await Contrato.create(req.body);
-		const propiedad = await Propiedad.findById(contrato.propiedad);
-		propiedad.contratos.push(contrato._id);
-		await propiedad.save();
+		await AlquilarPropiedad(propiedad, contrato._id);
 		return res.status(201).json({
 			success: true,
 			data: contrato,
