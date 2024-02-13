@@ -1,37 +1,42 @@
-const Contrato = require('../models/Contrato');
+const Contrato = require("../models/Contrato");
+const Propiedad = require("../models/Propiedad");
 
+// crear un contrato y pushea en contratos de la propiedad correspondiente
 exports.addContrato = async (req, res, next) => {
-    try {
-        const contrato = await Contrato.create(req.body);
-        return res.status(201).json({
-            success: true,
-            data: contrato
-        });
-    } catch (error) {
-        console.error(error);
-        return res.status(500).json({ 
-            error: 'Server Error'
-        });
-    }
+	try {
+		const contrato = await Contrato.create(req.body);
+		const propiedad = await Propiedad.findById(contrato.propiedad);
+		propiedad.contratos.push(contrato._id);
+		await propiedad.save();
+		return res.status(201).json({
+			success: true,
+			data: contrato,
+		});
+	} catch (error) {
+		console.error(error);
+		return res.status(500).json({
+			error: "Server Error",
+		});
+	}
 };
 
 exports.getContrato = async (req, res, next) => {
-    try {
-        const contrato = await Contrato.findOneById(req.params.id);
-        if (!contrato) {
-            return res.status(404).json({
-                success: false,
-                error: 'Contrato not found'
-            });
-        }
-        return res.status(200).json({
-            success: true,
-            data: contrato
-        });
-    } catch (error) {
-        console.error(error);
-        return res.status(500).json({ 
-            error: 'Server Error'
-        });
-    }
+	try {
+		const contrato = await Contrato.findById(req.params.id);
+		if (!contrato) {
+			return res.status(404).json({
+				success: false,
+				error: "Contrato not found",
+			});
+		}
+		return res.status(200).json({
+			success: true,
+			data: contrato,
+		});
+	} catch (error) {
+		console.error(error);
+		return res.status(500).json({
+			error: "Server Error",
+		});
+	}
 };
