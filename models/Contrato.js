@@ -84,10 +84,10 @@ const ContratoSchema = new mongoose.Schema({
 		ref: "Propiedad",
 		required: [true, "Por favor ingrese una propiedad"],
 	},
-	locador: {
+	locatario: {
 		type: mongoose.Types.ObjectId,
 		ref: "Cliente",
-		required: [true, "Por favor ingrese un inquilino"],
+		required: [true, "Por favor ingrese un locatario"],
 	},
 	garantes: [
 		{
