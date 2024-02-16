@@ -95,6 +95,14 @@ const PropiedadSchema = new mongoose.Schema({
 			},
 		},
 	],
+	ubicacion: {
+		lat: {
+			type: Number,
+		},
+		lng: {
+			type: Number,
+		},
+	},
 });
 
 module.exports = mongoose.model("Propiedad", PropiedadSchema);
