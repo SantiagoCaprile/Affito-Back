@@ -33,6 +33,7 @@ app.use("/api/v1/clientes", require("./routes/clientes"));
 app.use("/api/v1/aud_clientes", require("./routes/aud_clientes"));
 app.use("/api/v1/contratos", require("./routes/contratos"));
 app.use("/api/v1/busquedas", require("./routes/busquedasInteligentes"));
+app.use("/api/v1/tasaciones", require("./routes/tasaciones"));
 
 const PORT = process.env.PORT || 3000;
 
