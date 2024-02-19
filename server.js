@@ -32,9 +32,10 @@ app.use("/api/v1/monedas", require("./routes/moneda"));
 app.use("/api/v1/clientes", require("./routes/clientes"));
 app.use("/api/v1/aud_clientes", require("./routes/aud_clientes"));
 app.use("/api/v1/contratos", require("./routes/contratos"));
+app.use("/api/v1/busquedas", require("./routes/busquedasInteligentes"));
 
 const PORT = process.env.PORT || 3000;
 
 app.listen(PORT, () =>
-  console.log(`Server running in ${process.env.NODE_ENV} mode on port ${PORT}`)
+	console.log(`Server running in ${process.env.NODE_ENV} mode on port ${PORT}`)
 );
