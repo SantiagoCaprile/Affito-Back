@@ -176,3 +176,26 @@ exports.AlquilarPropiedad = async (prop, contratoId) => {
 		console.error(error);
 	}
 };
+
+exports.getContratos = async (req, res, next) => {
+	try {
+		const prop = await Propiedad.findOne({ _id: req.params.id }).populate(
+			"contratos"
+		);
+		if (!prop) {
+			return res.status(404).json({
+				success: false,
+				error: "Propiedad not found",
+			});
+		}
+		return res.status(200).json({
+			success: true,
+			data: prop.contratos,
+		});
+	} catch (error) {
+		console.error(error);
+		return res.status(500).json({
+			error: "Server Error",
+		});
+	}
+};
