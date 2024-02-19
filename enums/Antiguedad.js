@@ -1,6 +1,7 @@
 //Antiguedades
 
 const ANTIGUEDAD = {
+	NULL: "",
 	A_ESTRENAR: "A estrenar",
 	DE_0_A_5: "0-5",
 	DE_5_A_10: "5-10",

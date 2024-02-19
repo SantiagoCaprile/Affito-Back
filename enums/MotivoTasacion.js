@@ -1,6 +1,7 @@
 //motivos de la tasacion
 
 const MOTIVOS_TASACION = {
+	NULL: "",
 	HIPOTECA: "hipoteca",
 	DONACION_HERENCIA: "donacion/herencia",
 	SEGURO: "seguro",
