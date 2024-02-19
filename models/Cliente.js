@@ -61,6 +61,12 @@ const ClienteSchema = new mongoose.Schema({
 			maxlength: [50, "localidad no puede tener mas de 10 caracteres"],
 		},
 	},
+	propiedades: [
+		{
+			type: mongoose.Schema.ObjectId,
+			ref: "Propiedad",
+		},
+	],
 });
 
 module.exports = mongoose.model("Cliente", ClienteSchema);
