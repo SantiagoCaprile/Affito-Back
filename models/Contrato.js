@@ -3,6 +3,7 @@ const mongoose = require("mongoose");
 const EstadoContratos = require("../enums/EstadoContratos");
 const Monedas = require("../enums/Monedas");
 const PropDestinos = require("../enums/PropDestinos");
+const EstadoPropiedad = require("../enums/EstadoPropiedad");
 
 const ContratoSchema = new mongoose.Schema(
 	{
@@ -42,15 +43,14 @@ const ContratoSchema = new mongoose.Schema(
 		comision_celebracion: {
 			type: Number,
 		},
-		fecha_proxima_actualizacion: {
-			//ver como implementar porque las actualizaciones variann segun el contrato
-			//puede ser cada 6 meses, cada año, etc
-			type: Date,
-		},
 		monto: {
 			type: Number,
 			required: [true, "Por favor ingrese un monto"],
 			min: [0, "El monto no puede ser negativo"],
+		},
+		saldo: {
+			type: Number,
+			value: this.comision_celebracion * -1,
 		},
 		moneda: {
 			type: String,
@@ -66,7 +66,7 @@ const ContratoSchema = new mongoose.Schema(
 		pagos: [
 			{
 				type: mongoose.Types.ObjectId,
-				ref: "Pago",
+				ref: "PagoContrato",
 			},
 		],
 		propiedad: {
@@ -90,5 +90,36 @@ const ContratoSchema = new mongoose.Schema(
 		timestamps: true,
 	}
 );
+
+ContratoSchema.pre("save", async function (next) {
+	const Propiedad = require("./Propiedad");
+	const Cliente = require("./Cliente");
+	const propiedad = await Propiedad.findById(this.propiedad);
+	if (propiedad.estado === EstadoPropiedad.ALQUILADA) {
+		const error = new Error("La propiedad ya está alquilada.");
+		error.status = 400;
+		next(error);
+	}
+	if (propiedad.propietario === this.locatario) {
+		const error = new Error("El propietario no puede ser locatario.");
+		error.status = 400;
+		next(error);
+	}
+	if (this.garantes.some((garante) => garante === propiedad.propietario)) {
+		const error = new Error("El propietario no puede ser garante.");
+		error.status = 400;
+		next(error);
+	}
+	if (this.isNew) {
+		this.saldo = this.comision_celebracion * -1;
+		Cliente.updateOne(
+			{ _id: this.locatario },
+			{
+				$push: { propiedades: { propiedad: this.propiedad, rol: "Locatario" } },
+			}
+		);
+	}
+	next();
+});
 
 module.exports = mongoose.model("Contrato", ContratoSchema);

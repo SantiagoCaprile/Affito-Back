@@ -1,5 +1,6 @@
 const Propiedad = require("../models/Propiedad");
 const EstadoPropiedad = require("../enums/EstadoPropiedad");
+const Cliente = require("../models/Cliente");
 
 exports.getPropiedades = async (req, res, next) => {
 	try {
@@ -20,10 +21,17 @@ exports.getPropiedades = async (req, res, next) => {
 
 exports.addPropiedad = async (req, res, next) => {
 	try {
-		const propiedades = await Propiedad.create(req.body);
+		const propiedad = await Propiedad.create(req.body);
+		Cliente.findById(req.body.propietario, (err, cliente) => {
+			if (err) {
+				console.log(err);
+			} else {
+				cliente.addPropiedad(propiedad._id, "Propietario");
+			}
+		});
 		return res.status(201).json({
 			success: true,
-			data: propiedades,
+			data: propiedad,
 		});
 	} catch (error) {
 		console.error(error);
@@ -35,7 +43,16 @@ exports.addPropiedad = async (req, res, next) => {
 
 exports.getPropiedad = async (req, res, next) => {
 	try {
-		const prop = await Propiedad.findOne({ _id: req.params.id });
+		const prop = await Propiedad.findOne({ _id: req.params.id })
+			.populate("senias")
+			.populate({
+				path: "senias",
+				populate: {
+					path: "cliente",
+					model: "Cliente",
+					select: "nombre_razon_social cuit",
+				},
+			});
 		if (!prop) {
 			return res.status(404).json({
 				success: false,
@@ -171,6 +188,13 @@ exports.AlquilarPropiedad = async (prop, contratoId) => {
 	try {
 		prop.estado = EstadoPropiedad.ALQUILADA;
 		prop.contratos.push(contratoId);
+		prop.senias = prop.senias.map((senia) => {
+			senia.vigente = false;
+			return senia;
+		});
+		prop.operaciones = prop.operaciones.filter(
+			(operacion) => operacion.tipo !== "Alquiler"
+		);
 		await prop.save();
 	} catch (error) {
 		console.error(error);

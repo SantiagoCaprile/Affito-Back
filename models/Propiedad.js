@@ -103,29 +103,12 @@ const PropiedadSchema = new mongoose.Schema({
 			type: Number,
 		},
 	},
-});
-
-PropiedadSchema.post("save", async function (doc, next) {
-	if (doc.propietario) {
-		try {
-			await mongoose
-				.model("Cliente")
-				.findByIdAndUpdate(
-					doc.propietario,
-					await mongoose
-						.model("Cliente")
-						.findOneAndUpdate(
-							{ _id: doc.propietario },
-							{ $push: { propiedades: doc._id } },
-							{ upsert: true, new: true, useFindAndModify: false }
-						)
-				);
-		} catch (err) {
-			next(err);
-		}
-	}
-
-	next();
+	senias: [
+		{
+			type: mongoose.Types.ObjectId,
+			ref: "Senia",
+		},
+	],
 });
 
 module.exports = mongoose.model("Propiedad", PropiedadSchema);
