@@ -37,7 +37,6 @@ exports.getSenia = async (req, res) => {
 
 exports.arrepentirseSenia = async (req, res) => {
 	try {
-		console.log(req.params.id);
 		const senia = await Senia.findById(req.params.id);
 		senia.vigente = false;
 		senia.validaHasta = new Date();

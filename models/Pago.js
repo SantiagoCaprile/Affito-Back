@@ -53,7 +53,6 @@ SeniaSchema.post("updateOne", async function (next) {
 	const Propiedad = require("./Propiedad");
 	const propiedad = await Propiedad.findById(this.propiedad);
 	if (!this.vigente && propiedad.estado === EstadoPropiedad.RESERVADA) {
-		console.log("propiedad ya no seniada y con cambio de estado");
 		Propiedad.updateOne(
 			{ _id: this.propiedad },
 			{ estado: EstadoPropiedad.DISPONIBLE }
@@ -68,7 +67,6 @@ SeniaSchema.pre("save", async function (next) {
 	this.vigente = this.validaHasta > Date.now();
 	const Propiedad = require("./Propiedad");
 	const propiedad = await Propiedad.findById(this.propiedad);
-	console.log("chequear que se pushee la senia a la propiedad");
 	if (isCreate) {
 		if (propiedad.estado === EstadoPropiedad.DISPONIBLE) {
 			if (!propiedad.senias) {
@@ -76,9 +74,6 @@ SeniaSchema.pre("save", async function (next) {
 			}
 			propiedad.senias.push(this);
 			propiedad.estado = EstadoPropiedad.RESERVADA;
-			console.log(
-				"propiedad seniada y con el estado cambiado y la senia pusheada"
-			);
 			await propiedad.save().catch((err) => {
 				console.error(err);
 			});
@@ -101,7 +96,6 @@ SeniaSchema.post("save", async function (doc, next) {
 			await propiedad
 				.save()
 				.then(() => {
-					console.log("propiedad deseniada y con el estado cambiado");
 					next();
 				})
 				.catch((err) => {
