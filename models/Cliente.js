@@ -63,10 +63,34 @@ const ClienteSchema = new mongoose.Schema({
 	},
 	propiedades: [
 		{
-			type: mongoose.Schema.ObjectId,
-			ref: "Propiedad",
+			id: {
+				type: mongoose.Schema.Types.ObjectId,
+				ref: "Propiedad",
+			},
+			rol: {
+				type: String,
+				enum: ["Propietario", "Locatario", "Garante"],
+				default: "Propietario",
+			},
 		},
 	],
 });
+
+ClienteSchema.statics.roles = {
+	PROPIETARIO: "Propietario",
+	LOCATARIO: "Locatario",
+	GARANTE: "Garante",
+};
+
+ClienteSchema.methods.addPropiedad = async function (propiedadId, rol) {
+	if (!this.propiedades || this.propiedades === undefined) {
+		this.propiedades = [];
+	}
+	if (this.propiedades.some((prop) => prop.id === propiedadId)) {
+		return;
+	}
+	this.propiedades.push({ id: propiedadId, rol: rol });
+	await this.save();
+};
 
 module.exports = mongoose.model("Cliente", ClienteSchema);

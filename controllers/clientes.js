@@ -34,9 +34,14 @@ exports.addCliente = async (req, res, next) => {
 
 exports.getCliente = async (req, res, next) => {
 	try {
-		const cliente = await Cliente.findOne({ cuit: req.params.id }).populate(
-			"propiedades"
-		);
+		const cliente = await Cliente.findOne({ cuit: req.params.id }).populate({
+			path: "propiedades",
+			populate: {
+				path: "id",
+				model: "Propiedad",
+				select: "_id tipo domicilio estado",
+			},
+		});
 		if (!cliente) {
 			return res.status(404).json({
 				success: false,
