@@ -18,10 +18,11 @@ exports.addUsuario = async (req, res, next) => {
 //actualiza la password
 exports.updateUsuario = async (req, res, next) => {
 	try {
-		req.body.password =
-			req.body.password !== null
-				? await Usuario.prototype.encryptPassword(req.body.password)
-				: null;
+		if (req.body.password) {
+			req.body.password = await Usuario.prototype.encryptPassword(
+				req.body.password
+			);
+		}
 		const usuario = await Usuario.findOneAndUpdate(
 			{ nombre: req.params.nombre },
 			req.body,
@@ -61,6 +62,11 @@ exports.validateUsuario = async (req, res, next) => {
 		return res.status(200).json({
 			success: true,
 			valid: autorizado,
+			user: {
+				nombre: usuario.nombre,
+				rol: usuario.rol,
+				id: usuario._id,
+			},
 		});
 	} catch (error) {
 		console.error(error);
