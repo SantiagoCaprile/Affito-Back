@@ -56,6 +56,14 @@ exports.validateUsuario = async (req, res, next) => {
 			return res.status(401).json({
 				success: false,
 				valid: false,
+				error: "Usuario no encontrado",
+			});
+		}
+		if (!usuario.activo) {
+			return res.status(401).json({
+				success: false,
+				valid: false,
+				error: "Usuario inactivo",
 			});
 		}
 		const autorizado = await usuario.comparePassword(req.body.password);
