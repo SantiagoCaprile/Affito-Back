@@ -1,4 +1,5 @@
 const Cliente = require("../models/Cliente");
+const ClienteAuditoriaSchema = require("../models/Cliente").ClienteAuditoria;
 
 exports.getClientes = async (req, res, next) => {
 	try {
@@ -20,6 +21,12 @@ exports.getClientes = async (req, res, next) => {
 exports.addCliente = async (req, res, next) => {
 	try {
 		const cliente = await Cliente.create(req.body);
+		const auditoriaCliente = new ClienteAuditoriaSchema();
+		await auditoriaCliente.createAuditoria(
+			cliente._id,
+			req.body.usuario,
+			ClienteAuditoriaSchema.acciones.CREACION
+		);
 		return res.status(201).json({
 			success: true,
 			data: cliente,
@@ -62,6 +69,19 @@ exports.getCliente = async (req, res, next) => {
 
 exports.updateCliente = async (req, res, next) => {
 	try {
+		const auditoriaCliente = new ClienteAuditoriaSchema();
+		const clienteId = await Cliente.findOne({ cuit: req.params.id });
+		if (!clienteId) {
+			return res.status(404).json({
+				success: false,
+				error: "Cliente not found",
+			});
+		}
+		await auditoriaCliente.createAuditoria(
+			clienteId._id,
+			req.body.usuario,
+			ClienteAuditoriaSchema.acciones.ACTUALIZACION
+		);
 		const cliente = await Cliente.findOneAndUpdate(
 			{ cuit: req.params.id },
 			req.body,
@@ -71,6 +91,10 @@ exports.updateCliente = async (req, res, next) => {
 			}
 		);
 		if (!cliente) {
+			//delete the last created auditoria
+			await ClienteAuditoriaSchema.findOneAndDelete({
+				_id: auditoriaCliente._id,
+			});
 			return res.status(404).json({
 				success: false,
 				error: "Cliente not found",

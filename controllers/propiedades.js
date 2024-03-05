@@ -26,7 +26,7 @@ exports.addPropiedad = async (req, res, next) => {
 			if (err) {
 				console.log(err);
 			} else {
-				cliente.addPropiedad(propiedad._id, "Propietario");
+				cliente.addPropiedad(propiedad._id, "Propietario", req.body.usuario);
 			}
 		});
 		return res.status(201).json({
