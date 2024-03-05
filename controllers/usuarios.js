@@ -2,6 +2,9 @@ const Usuario = require("../models/Usuario");
 
 exports.addUsuario = async (req, res, next) => {
 	try {
+		if (!req.body.password) {
+			req.body.password = "1234";
+		}
 		const usuario = await Usuario.create(req.body);
 		return res.status(201).json({
 			success: true,
