@@ -9,6 +9,9 @@ const {
 	deleteOperacion,
 	getContratos,
 } = require("../controllers/propiedades");
+const {
+	getClientesQueBuscanEstaPropiedad,
+} = require("../controllers/busquedasInteligentes");
 
 const router = express.Router();
 
@@ -19,5 +22,7 @@ router.route("/:id/contratos").get(getContratos);
 router.route("/:id/operacion").post(addOperacion);
 router.route("/:id/operacion/:idOperacion").put(editOperacion);
 router.route("/:id/operacion/:idOperacion").delete(deleteOperacion);
+
+router.route("/:propiedadId/busquedas").get(getClientesQueBuscanEstaPropiedad);
 
 module.exports = router;

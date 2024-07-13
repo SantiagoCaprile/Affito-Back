@@ -1,6 +1,7 @@
 const mongoose = require("mongoose");
 const Monedas = require("../enums/Monedas");
 const TIPO_PROPIEDAD = require("../enums/TipoPropiedad");
+const EstadoPropiedad = require("../enums/EstadoPropiedad");
 
 const BusquedaInteligenteSchema = new mongoose.Schema(
 	{
@@ -73,11 +74,87 @@ const BusquedaInteligenteSchema = new mongoose.Schema(
 			{
 				type: mongoose.Types.ObjectId,
 				ref: "Propiedad",
+				default: [],
 			},
 		],
 	},
 	{ timestamps: true }
 );
+
+const esPropiedadBuscada = async (propiedad, busqueda) => {
+	return (
+		propiedad.dimension >= busqueda.dimension_min &&
+		propiedad.dimension <= busqueda.dimension_max &&
+		propiedad.operaciones.some(
+			(operacion) =>
+				operacion.tipo == busqueda.operacion &&
+				operacion.moneda == busqueda.moneda &&
+				operacion.monto >= busqueda.monto_min &&
+				operacion.monto <= busqueda.monto_max
+		)
+	);
+};
+
+BusquedaInteligenteSchema.methods.calcularPropiedades = async function (
+	busquedaId
+) {
+	const busqueda = await mongoose
+		.model("BusquedaInteligente")
+		.findById(busquedaId);
+	if (!busqueda) {
+		return;
+	}
+	console.log("llego 1");
+	const propiedadesIds = await mongoose
+		.model("Propiedad")
+		.find({
+			$and: [
+				{ operaciones: { $exists: true, $not: { $size: 0 } } },
+				{ localidad: busqueda.localidad },
+				{ operaciones: { $elemMatch: { tipo: busqueda.operacion } } },
+				{ estado: { $ne: EstadoPropiedad.ALQUILADA } },
+				{ tipo: busqueda.tipo_propiedad },
+			],
+		})
+		.select("_id operaciones estado dimension");
+	if (propiedadesIds.length == 0) {
+		return;
+	}
+	if (!busqueda.propiedades) {
+		busqueda.propiedades = [];
+	}
+	const propiedadesCoiciden = [];
+	propiedadesIds.forEach((propiedad) => {
+		if (esPropiedadBuscada(propiedad, busqueda)) {
+			propiedadesCoiciden.push(propiedad._id);
+		}
+	});
+	await mongoose.model("BusquedaInteligente").findOneAndUpdate(
+		{ _id: busquedaId },
+		{
+			$set: { propiedades: propiedadesCoiciden },
+		}
+	);
+	console.log(propiedadesCoiciden);
+};
+
+BusquedaInteligenteSchema.methods.chequearNuevaPropiedad = async function (
+	propiedad
+) {
+	if (this.propiedades.includes(propiedad._id)) {
+		return;
+	}
+	if (esPropiedadBuscada(propiedad)) {
+		this.findOneAndUpdate(
+			{ _id: this._id },
+			{ $push: { propiedades: propiedad._id } }
+		);
+	}
+};
+
+BusquedaInteligenteSchema.post("save", async function () {
+	await this.calcularPropiedades(this._id);
+});
 
 module.exports = mongoose.model(
 	"BusquedaInteligente",

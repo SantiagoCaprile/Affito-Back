@@ -43,6 +43,10 @@ const ContratoSchema = new mongoose.Schema(
 		comision_celebracion: {
 			type: Number,
 		},
+		comision_celebracion_moneda: {
+			type: String,
+			enum: [Monedas.PESOS, Monedas.DOLAR, Monedas.EURO],
+		},
 		monto: {
 			type: Number,
 			required: [true, "Por favor ingrese un monto"],

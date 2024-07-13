@@ -111,6 +111,7 @@ exports.addOperacion = async (req, res, next) => {
 			});
 		}
 		prop.operaciones.push(req.body);
+		prop.chequearSiEsBuscada(); //verifica todas las busquedas para ver si la propiedad cumple con alguna
 		await prop.save();
 		return res.status(201).json({
 			success: true,

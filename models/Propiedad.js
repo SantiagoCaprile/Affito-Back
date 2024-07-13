@@ -1,6 +1,7 @@
 const mongoose = require("mongoose");
 const EstadoPropiedad = require("../enums/EstadoPropiedad");
 const Monedas = require("../enums/Monedas");
+const BusquedaInteligente = require("../models/BusquedaInteligente");
 
 const PropiedadSchema = new mongoose.Schema({
 	descripcion: {
@@ -110,5 +111,14 @@ const PropiedadSchema = new mongoose.Schema({
 		},
 	],
 });
+
+//llama a la funcion chequearNuevaPropiedad de cada busqueda para ver si la propiedad cumple con alguna busqueda
+PropiedadSchema.methods.chequearSiEsBuscada = async function () {
+	const busquedas = await BusquedaInteligente.find();
+	console.log("chequeando si es buscada");
+	busquedas.forEach((busqueda) => {
+		busqueda.chequearNuevaPropiedad(this);
+	});
+};
 
 module.exports = mongoose.model("Propiedad", PropiedadSchema);
